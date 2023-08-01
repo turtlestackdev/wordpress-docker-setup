@@ -1,0 +1,48 @@
+---
+services:
+  wordpress:
+    image: wordpress:php8.2-fpm
+    volumes:
+      - ./wordpress:/var/www/html
+    environment:
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_TABLE_PREFIX=wp_
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_USER=wp
+      - WORDPRESS_DB_PASSWORD=password
+    depends_on:
+      - mariadb
+    networks:
+      - wp-dev
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5555:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./wordpress:/var/www/html
+    networks:
+      - wp-dev
+    depends_on:
+      - wordpress
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - wp-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=wp
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=wordpress
+    ports:
+      - 3306:3306
+    networks:
+      - wp-dev
+
+networks:
+  wp-dev:
+
+volumes:
+  wp-data:
