@@ -1,7 +1,8 @@
 # This is just a simple wrapper around the wordpress image.
 # All it does is setup XDEBUG in the image if the environment var WITH_XDEBUG = true.
 # Defaults to false.
-FROM wordpress:php8.2-fpm
+ARG PHP_VERSION=8.2
+FROM wordpress:php${PHP_VERSION}-fpm
 
 ARG WITH_XDEBUG=false
 ARG HOST_IP_ADDRESS="127.0.0.1"
